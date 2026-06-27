@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WealthBridge — Retirement Planner</title>
+  <meta name="description"
+    content="High-fidelity interactive retirement corpus projection dashboard with Monte Carlo stochastic simulation — WealthBridge." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap"
+    rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
+  <!-- STYLE -->
+</head>
+
+<body>
+
+  <!-- Startup / Splash Screen -->
+  <div id="startup-screen">
+    <div class="startup-bg"></div>
+    <div class="startup-content">
+      <div class="startup-logo">
+        <span class="startup-icon">💎</span>
+      </div>
+      <h1 class="startup-title">WealthBridge</h1>
+      <p class="startup-motto">Bridging Today's Income with Tomorrow's Retirement</p>
+      <div class="startup-progress-container">
+        <div class="startup-progress-bar" id="startup-progress"></div>
+      </div>
+      <div class="startup-status" id="startup-status">Initializing WealthBridge Engine...</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════ TOP BAR -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-icon">💎</div>
+      <div style="display:flex; flex-direction:column; gap:2px;">
+        <div class="brand-name" style="line-height:1.2; font-weight:800; font-size:18px;">WealthBridge</div>
+        <div class="brand-sub" style="font-size:10px; color:var(--text-muted); font-weight:500; letter-spacing:0.3px;">Bridging Today's Income with Tomorrow's Retirement</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <button id="export-btn" class="export-btn" onclick="exportData()" aria-label="Export report" title="Export report">
+        <span class="export-icon">📥</span>
+        <span class="export-text">Export Report</span>
+      </button>
+      <button id="theme-toggle" class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Toggle bright mode" title="Toggle bright mode">
+        <span class="theme-toggle-icon">☀️</span>
+        <span class="theme-toggle-text">Bright Mode</span>
+      </button>
+      <span id="status-text" style="display: none !important;">Initialising…</span>
+    </div>
+  </header>
+  <!-- ═══════════════════════════════════════════════════════════ TAB BUTTONS -->
+  <nav class="tabs-bar" role="tablist" aria-label="Dashboard tabs">
+    <button class="tab-btn active" id="tab-btn-1" role="tab" aria-selected="true" aria-controls="tab-panel-1"
+      onclick="switchTab(1)">
+      <span class="tab-icon">🔮</span> Unified Financial Calculator
+    </button>
+    <button class="tab-btn" id="tab-btn-2" role="tab" aria-selected="false" aria-controls="tab-panel-2"
+      onclick="switchTab(2)">
+      <span class="tab-icon">📈</span> Salary Projections & Income
+    </button>
+    <button class="tab-btn" id="tab-btn-3" role="tab" aria-selected="false" aria-controls="tab-panel-3"
+      onclick="switchTab(3)">
+      <span class="tab-icon">🧱</span> Wealth Accumulation Layer
+    </button>
+  </nav>
+
+  <!-- ═══════════════════════════════════════════════ TAB 1: UNIFIED FINANCIAL CALCULATOR -->
+  <div class="tab-panel active" id="tab-panel-1" role="tabpanel">
+    <div class="main-content">
+      <div class="tab1-grid">
+
+        <!-- LEFT: Control Console -->
+        <aside class="control-console">
+          <div class="panel">
+            <div class="panel-title">Control Console</div>
+
+            <!-- Member Profile -->
+            <div class="section-header">👤 Member Profile</div>
+
+            <div class="slider-group">
+              <div class="slider-header">
+                <span class="slider-label">Current Age</span>
+                <span class="slider-value" id="val-age">28 yrs</span>
+              </div>
+              <input type="range" id="sl-age" min="18" max="58" value="28" step="1"
+                oninput="sliderUpdate('age', this.value, 'yrs')" />
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-header">
+                <span class="slider-label">Retirement Age</span>
+                <span class="slider-value" id="val-ret-age">60 yrs</span>
+              </div>
+              <input type="range" id="sl-ret-age" min="50" max="70" value="60" step="1"
+                oninput="sliderUpdate('ret-age', this.value, 'yrs')" />
+            </div>
+
+            <div class="input-group">
+              <label class="input-label" for="inp-ctc">Starting Annual CTC (₹)</label>
+              <input type="number" class="styled-input" id="inp-ctc" value="2000000" min="300000" max="100000000"
+                step="100000" oninput="scheduleRecalc()" />
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-header">
+                <span class="slider-label">Life Expectancy</span>
+                <span class="slider-value" id="val-life">85 yrs</span>
+              </div>
+              <input type="range" id="sl-life" min="70" max="100" value="85" step="1"
+                oninput="sliderUpdate('life', this.value, 'yrs')" />
+            </div>
+
+            <div class="divider" style="margin: 10px 0;"></div>
+
+            <!-- Market Parameters -->
+            <div class="section-header" style="margin-top:4px;">📊 Market Parameters</div>
+
+            <div class="slider-group">
+              <div class="slider-header">
+                <span class="slider-label">Salary Growth Rate</span>
+                <span class="slider-value" id="val-sg">8.0%</span>
+              </div>
+              <input type="range" id="sl-sg" min="2" max="20" value="8" step="0.5"
+                oninput="sliderUpdate('sg', this.value, '%', 1)" />
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-header">
+                <span class="slider-label">Inflation Rate (CPI)</span>
+                <span class="slider-value" id="val-inf">6.0%</span>
+              </div>
+              <input type="range" id="sl-inf" min="2" max="14" value="6" step="0.5"
+                oninput="sliderUpdate('inf', this.value, '%', 1)" />
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-header">
+                <span class="slider-label">ELSS Net Return</span>
+                <span class="slider-value" id="val-elss-r">12.0%</span>
+              </div>
+              <input type="range" id="sl-elss-r" min="6" max="22" value="12" step="0.25"
+                oninput="sliderUpdate('elss-r', this.value, '%', 2)" />
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-header">
+                <span class="slider-label">NPS Blended Return</span>
+                <span class="slider-value" id="val-nps-r">10.75%</span>
+              </div>
+              <input type="range" id="sl-nps-r" min="5" max="18" value="10.75" step="0.25"
+                oninput="sliderUpdate('nps-r', this.value, '%', 2)" />
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-header">
+                <span class="slider-label">EPF Interest Rate</span>
+                <span class="slider-value" id="val-epf-r">8.15%</span>
+              </div>
+              <input type="range" id="sl-epf-r" min="6" max="10" value="8.15" step="0.05"
+                oninput="sliderUpdate('epf-r', this.value, '%', 2)" />
+            </div>
+
+            <div class="divider" style="margin: 10px 0;"></div>
+
+            <!-- Contribution Rates -->
+            <div class="section-header" style="margin-top:4px;">💰 Contributions</div>
+
+            <div class="slider-group">
+              <div class="slider-header">
+                <span class="slider-label">Monthly ELSS SIP (₹)</span>
+                <span class="slider-value" id="val-elss-sip">₹10,000</span>
+              </div>
+              <input type="range" id="sl-elss-sip" min="0" max="50000" value="10000" step="1000"
+                oninput="sliderUpdate('elss-sip', this.value, '', 0, true)" />
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-header">
+                <span class="slider-label">NPS Employee % of Basic</span>
+                <span class="slider-value" id="val-nps-e">5.0%</span>
+              </div>
+              <input type="range" id="sl-nps-e" min="0" max="15" value="5" step="0.5"
+                oninput="sliderUpdate('nps-e', this.value, '%', 1)" />
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-header">
+                <span class="slider-label">WeCare Employee Contrib % of Basic</span>
+                <span class="slider-value" id="val-wc-e">10.0%</span>
+              </div>
+              <input type="range" id="sl-wc-e" min="0" max="20" value="10" step="0.5"
+                oninput="sliderUpdate('wc-e', this.value, '%', 1)" />
+            </div>
+
+            <div class="slider-group">
+              <div class="slider-header">
+                <span class="slider-label">Safe Withdrawal Rate</span>
+                <span class="slider-value" id="val-swr">4.0%</span>
+              </div>
+              <input type="range" id="sl-swr" min="2" max="7" value="4" step="0.1"
+                oninput="sliderUpdate('swr', this.value, '%', 1)" />
+            </div>
+
+            <div style="display: none;">
+              <div class="divider" style="margin: 10px 0;"></div>
+
+              <!-- Housing & Home Loan -->
+              <div class="section-header" style="margin-top:4px;">🔑 Housing & Home Loan</div>
+
+              <div class="slider-group">
+                <div class="slider-header">
+                  <span class="slider-label">Target House Price</span>
+                  <span class="slider-value" id="val-house-price">₹15,000,000</span>
+                </div>
+                <input type="range" id="sl-house-price" min="2000000" max="50000000" value="15000000" step="500000"
+                  oninput="sliderUpdate('house-price', this.value, '', 0, true)" />
+              </div>
+
+              <div class="slider-group">
+                <div class="slider-header">
+                  <span class="slider-label">Down Payment %</span>
+                  <span class="slider-value" id="val-down-payment-pct">20.0%</span>
+                </div>
+                <input type="range" id="sl-down-payment-pct" min="10" max="60" value="20" step="1"
+                  oninput="sliderUpdate('down-payment-pct', this.value, '%', 1)" />
+              </div>
+
+              <div class="slider-group">
+                <div class="slider-header">
+                  <span class="slider-label">Home Loan Rate</span>
+                  <span class="slider-value" id="val-loan-rate">7.50%</span>
+                </div>
+                <input type="range" id="sl-loan-rate" min="5" max="15" value="7.5" step="0.05"
+                  oninput="sliderUpdate('loan-rate', this.value, '%', 2)" />
+              </div>
+
+              <div class="slider-group">
+                <div class="slider-header">
+                  <span class="slider-label">Loan Tenure</span>
+                  <span class="slider-value" id="val-loan-tenure">20 yrs</span>
+                </div>
+                <input type="range" id="sl-loan-tenure" min="5" max="30" value="20" step="1"
+                  oninput="sliderUpdate('loan-tenure', this.value, 'yrs', 0)" />
+              </div>
+
+              <div class="slider-group">
+                <div class="slider-header">
+                  <span class="slider-label">Safe EMI % of Net</span>
+                  <span class="slider-value" id="val-safe-emi-pct">35.0%</span>
+                </div>
+                <input type="range" id="sl-safe-emi-pct" min="15" max="50" value="35" step="1"
+                  oninput="sliderUpdate('safe-emi-pct', this.value, '%', 1)" />
+              </div>
+            </div>
+
+            <div style="display:flex; flex-direction:column; gap:8px; margin-top:14px;">
+              <button class="btn-recalc" id="btn-calc" onclick="recalculate()">
+                <div class="calc-spinner" id="calc-spinner"></div>
+                <span id="btn-calc-text">⚡ Run Actuarial Simulation</span>
+              </button>
+              <button class="btn-reset" onclick="resetToBase()">↺ Reset to Base Case</button>
+            </div>
+          </div>
+        </aside>
+
+        <!-- RIGHT: Charts + Metrics -->
+        <div class="right-panel">
+
+          <!-- Top Metrics Row -->
+          <div class="metrics-row">
+            <div class="metric-card">
+              <div class="metric-label">Total Investable Corpus</div>
+              <div class="metric-value purple" id="m-corpus">—</div>
+              <div class="metric-sub">at Retirement Age 60</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">Monthly Retirement Income</div>
+              <div class="metric-value cyan" id="m-income">—</div>
+              <div class="metric-sub">EPF + NPS + WeCare + ELSS SWR</div>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">Replacement Ratio</div>
+              <div class="metric-value" id="m-rr">—</div>
+              <div class="metric-sub" id="m-rr-sub">Target: 50%–70%</div>
+            </div>
+          </div>
+
+          <!-- Success Probability Callout -->
+          <div class="success-callout">
+            <div class="callout-text">
+              <div class="callout-label">
+                <span class="callout-label-icon">🎯</span>
+                Corpus Survival Probability
+              </div>
+              <div class="callout-desc">
+                Likelihood that the total investable corpus (₹ EPF + NPS + ELSS)
+                survives to <span id="callout-age">age 85</span> without depletion,
+                across <strong>2,000 Monte Carlo paths</strong> with stochastic market returns.
+              </div>
+              <div style="margin-top:8px; display:flex; gap:10px; align-items:center;">
+                <div class="tag" id="prob-tag">—</div>
+                <span style="font-size:11px; color:var(--text-muted);">
+                  σ: ELSS±15% · NPS±10% · EPF±2%
+                </span>
+              </div>
+            </div>
+            <div class="callout-big-num" id="success-prob">
+              —<span class="pct-sign">%</span>
+            </div>
+          </div>
+
+          <!-- Housing & Home Loan Affordability Card -->
+          <div class="housing-card panel" style="display: none; margin-top: 15px; margin-bottom: 15px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--border); padding-bottom:10px; margin-bottom:12px;">
+              <div style="display:flex; align-items:center; gap:8px; font-weight:600; color:var(--text-bright); font-size:14px;">
+                🏠 Housing & Home Loan Affordability
+              </div>
+              <div id="housing-status-tag" class="tag">—</div>
+            </div>
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap:15px;">
+              <div>
+                <div style="font-size:11px; color:var(--text-muted); margin-bottom:4px;">Monthly Loan EMI</div>
+                <div id="h-monthly-emi" style="font-size:18px; font-weight:700; color:var(--text-bright);"></div>
+                <div style="font-size:10px; color:var(--text-muted);" id="h-loan-amount-sub">Loan: </div>
+              </div>
+              <div>
+                <div style="font-size:11px; color:var(--text-muted); margin-bottom:4px;">Safe EMI Limit</div>
+                <div id="h-safe-emi" style="font-size:18px; font-weight:700; color:var(--text-muted);"></div>
+                <div style="font-size:10px; color:var(--text-muted);">Based on Year 1 Net Salary</div>
+              </div>
+              <div>
+                <div style="font-size:11px; color:var(--text-muted); margin-bottom:4px;">Max Affordable House Price</div>
+                <div id="h-max-house" style="font-size:18px; font-weight:700; color:var(--cyan);"></div>
+                <div style="font-size:10px; color:var(--text-muted);">At current down payment %</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- P10/P50/P90 Chart -->
+          <div class="chart-panel">
+            <div class="chart-header">
+              <div class="chart-title">
+                📉 Monte Carlo Wealth Trajectories — P10 / P50 / P90 Market Bands
+              </div>
+              <div class="chart-legend">
+                <div class="legend-item">
+                  <div class="legend-dot" style="background:#0077B6;"></div> P10 Pessimistic
+                </div>
+                <div class="legend-item">
+                  <div class="legend-dot" style="background:#00b4db;"></div> P50 Expected
+                </div>
+                <div class="legend-item">
+                  <div class="legend-dot" style="background:#80CAFF;"></div> P90 Optimistic
+                </div>
+              </div>
+            </div>
+            <div class="chart-wrap">
+              <canvas id="chart-mc" aria-label="Monte Carlo wealth trajectories"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════ TAB 2: SALARY PROJECTIONS -->
+  <div class="tab-panel" id="tab-panel-2" role="tabpanel">
+    <div class="main-content">
+      <div class="tab2-grid">
+
+        <!-- Bar Chart -->
+        <div class="chart-panel">
+          <div class="chart-header">
+            <div class="chart-title">Annual CTC vs Net Take-Home vs ELSS SIP</div>
+          </div>
+          <div class="chart-wrap" style="height:420px;">
+            <canvas id="chart-salary" aria-label="Salary projections bar chart"></canvas>
+          </div>
+        </div>
+
+        <!-- Data Table -->
+        <div class="panel" style="padding:0; overflow:hidden;">
+          <div style="padding:16px 18px; border-bottom:1px solid var(--panel-border);">
+            <div class="panel-title" style="margin-bottom:0;">Year-by-Year Projection — 32-Year Career Horizon</div>
+          </div>
+          <div class="data-table-wrap" style="border:none; border-radius:0;">
+            <table class="data-table" id="salary-table">
+              <thead>
+                <tr>
+                  <th>Yr / Age</th>
+                  <th>Annual CTC</th>
+                  <th>Monthly Basic</th>
+                  <th>EPF / mo</th>
+                  <th>NPS / mo</th>
+                  <th>WeCare / mo</th>
+                  <th>ELSS SIP</th>
+                  <th>Tax / mo</th>
+                  <th>Net Take-Home</th>
+                </tr>
+              </thead>
+              <tbody id="salary-table-body">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Bottom: Additional income decomposition -->
+      <div style="margin-top:20px;">
+        <div class="panel">
+          <div class="panel-title">Pre-Tax Income Decomposition (Year 1 vs Year 32)</div>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:12px;">
+            <div class="income-row">
+              <span class="income-row-label">Year 1 Annual CTC</span>
+              <span class="income-row-val purple" id="sum-y1-ctc">—</span>
+            </div>
+            <div class="income-row">
+              <span class="income-row-label">Year 1 Net Take-Home / mo</span>
+              <span class="income-row-val cyan" id="sum-y1-th">—</span>
+            </div>
+            <div class="income-row">
+              <span class="income-row-label">Year 32 Annual CTC</span>
+              <span class="income-row-val purple" id="sum-y32-ctc">—</span>
+            </div>
+            <div class="income-row">
+              <span class="income-row-label">Year 32 Net Take-Home / mo</span>
+              <span class="income-row-val cyan" id="sum-y32-th">—</span>
+            </div>
+            <div class="income-row">
+              <span class="income-row-label">Effective Tax Rate</span>
+              <span class="income-row-val" id="sum-tax-rate">20%</span>
+            </div>
+            <div class="income-row">
+              <span class="income-row-label">Total Retirement Deductions (Yr 1)</span>
+              <span class="income-row-val magenta" id="sum-deductions">—</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════ TAB 3: WEALTH ACCUMULATION -->
+  <div class="tab-panel" id="tab-panel-3" role="tabpanel">
+    <div class="main-content">
+
+      <div class="tab3-top">
+        <!-- Left: Donut Chart -->
+        <div class="panel donut-panel">
+          <div class="panel-title">Portfolio Breakdown at Retirement</div>
+          <div class="donut-wrap">
+            <canvas id="chart-donut" aria-label="Portfolio donut chart"></canvas>
+            <div class="donut-center">
+              <span class="donut-center-label">Total Corpus</span>
+              <span class="donut-center-value" id="donut-total">—</span>
+            </div>
+          </div>
+          <div class="donut-legend" id="donut-legend">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+
+        <!-- Right: Corpus Curves Chart -->
+        <div class="chart-panel">
+          <div class="chart-header">
+            <div class="chart-title">📈 Corpus Accumulation by Asset — EPF · NPS · ELSS</div>
+            <div class="chart-legend">
+              <div class="legend-item">
+                <div class="legend-dot" style="background:var(--cyan)"></div> EPF
+              </div>
+              <div class="legend-item">
+                <div class="legend-dot" style="background:var(--purple)"></div> NPS
+              </div>
+              <div class="legend-item">
+                <div class="legend-dot" style="background:var(--magenta)"></div> ELSS
+              </div>
+              <div class="legend-item">
+                <div class="legend-dot" style="background:var(--amber)"></div> WeCare
+              </div>
+              <div class="legend-item">
+                <div class="legend-dot" style="background:var(--gold)"></div> Total
+              </div>
+            </div>
+          </div>
+          <div class="chart-wrap" style="height:340px;">
+            <canvas id="chart-corpus" aria-label="Corpus accumulation curves"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Corpus cards per vehicle -->
+      <div class="wealth-metrics" style="margin-bottom:20px;">
+        <div class="income-card epf">
+          <div class="income-card-icon">🏦</div>
+          <div class="income-card-name">EPF Corpus</div>
+          <div class="income-card-corpus" id="wc-epf">—</div>
+          <div class="income-card-rate">8.15% p.a. · Sovereign EEE</div>
+        </div>
+        <div class="income-card nps">
+          <div class="income-card-icon">📋</div>
+          <div class="income-card-name">NPS Corpus</div>
+          <div class="income-card-corpus" id="wc-nps">—</div>
+          <div class="income-card-rate">~10.75% blended · 40% annuity</div>
+        </div>
+        <div class="income-card elss">
+          <div class="income-card-icon">📊</div>
+          <div class="income-card-name">ELSS Corpus</div>
+          <div class="income-card-corpus" id="wc-elss">—</div>
+          <div class="income-card-rate">~12% net · 4% SWR drawdown</div>
+        </div>
+        <div class="income-card wecare">
+          <div class="income-card-icon">🛡️</div>
+          <div class="income-card-name">WeCare Corpus</div>
+          <div class="income-card-corpus" id="wc-wecare">—</div>
+          <div class="income-card-rate">Employee Cumulative Contribution</div>
+        </div>
+      </div>
+
+      <!-- Income Summary at Retirement -->
+      <div class="panel">
+        <div class="panel-title">Retirement Income Architecture — Monthly Cash Flows at Age 60</div>
+        <div class="income-summary">
+          <div class="income-row">
+            <span class="income-row-label">🏦 EPF Monthly Annuity (5.5% p.a.)</span>
+            <span class="income-row-val cyan" id="ri-epf">—</span>
+          </div>
+          <div class="income-row">
+            <span class="income-row-label">📋 NPS Monthly Annuity (40% @ 5.5%)</span>
+            <span class="income-row-val purple" id="ri-nps">—</span>
+          </div>
+          <div class="income-row">
+            <span class="income-row-label">🏢 WeCare DB Pension (pre-commutation)</span>
+            <span class="income-row-val" style="color:var(--amber);" id="ri-wecare">—</span>
+          </div>
+          <div class="income-row">
+            <span class="income-row-label">📊 ELSS 4% Safe Withdrawal Rate / 12</span>
+            <span class="income-row-val magenta" id="ri-elss">—</span>
+          </div>
+          <div class="income-row total-income-row">
+            <span class="income-row-label">💎 Total Monthly Retirement Income</span>
+            <span class="income-row-val magenta" id="ri-total">—</span>
+          </div>
+          <div class="income-row total-income-row"
+            style="background:rgba(157,78,221,0.08); border-color:rgba(157,78,221,0.25);">
+            <span class="income-row-label" style="color:var(--text-primary); font-weight:700;">📐 Replacement Ratio
+              (Income / Final Salary)</span>
+            <span class="income-row-val" style="color:var(--purple); font-size:18px;" id="ri-rr">—</span>
+          </div>
+        </div>
+
+        <!-- Lump Sums -->
+        <div style="margin-top:16px; padding-top:16px; border-top:1px solid var(--panel-border);">
+          <div class="section-header" style="margin-bottom:10px;">💼 Lump Sums Available at Retirement</div>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:10px;">
+            <div class="income-row">
+              <span class="income-row-label">NPS Tax-Free Lump Sum (60%)</span>
+              <span class="income-row-val purple" id="ls-nps">—</span>
+            </div>
+            <div class="income-row">
+              <span class="income-row-label">WeCare Commuted Lump Sum (33%)</span>
+              <span class="income-row-val" style="color:var(--amber);" id="ls-wc">—</span>
+            </div>
+            <div class="income-row">
+              <span class="income-row-label">ELSS Available as Lump Sum</span>
+              <span class="income-row-val magenta" id="ls-elss">—</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════ FOOTER -->
+  <footer class="footer">
+    <div>
+      <strong>WealthBridge Retirement Financial Planner</strong> — Track 1: Wealth & Pensions
+    </div>
+    <div style="margin-top:4px;">
+      All projections are illustrative and based on stated assumptions. EPF: 8.15% · NPS: ~10.75% · ELSS: ~12%.
+      Monte Carlo: 2,000 iterations · σ (ELSS 15%, NPS 10%, EPF 2%). Not financial advice.
+    </div>
+  </footer>
+
+  <!-- ══════════════════════════════════════════════════════════ JAVASCRIPT -->
+  <!-- SCRIPT -->
+</body>
+
+</html>

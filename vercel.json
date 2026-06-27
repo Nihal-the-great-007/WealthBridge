@@ -1,0 +1,29 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/index.py",
+      "use": "@vercel/python",
+      "config": {
+        "includeFiles": [
+          "templates/**",
+          "*.csv",
+          "WeCare_Financial_Model-1(ASSUMPTIONS).csv",
+          "WeCare_Financial_Model-1(SALARY_PROJ).csv",
+          "WeCare_Financial_Model-1(CORPUS_BUILD).csv",
+          "WeCare_Financial_Model-1(RETIREMENT).csv"
+        ]
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "api/index.py"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "api/index.py"
+    }
+  ]
+}

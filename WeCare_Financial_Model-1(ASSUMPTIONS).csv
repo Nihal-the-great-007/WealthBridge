@@ -1,0 +1,60 @@
+ASSUMPTIONS & PARAMETERS — WeCare Retirement Model,,,,
+Yellow cells = user inputs (edit these)  |  Blue cells = auto-calculated  |  Sensitivity range shown for stress-testing,,,,
+Parameter,Base Case Value,Rationale & Source,Sensitivity Range,Notes
+"A. MEMBER PROFILE  (Baseline: Rahul, 28, ?20L CTC — case study specification)",,,,
+Current Age (years),28,Case study baseline per competition specification. Mid-point of the 23–35 target cohort.,23 – 45,Drives accumulation period = Retirement Age ? Current Age
+Normal Retirement Age (years),60,WeCare plan defined retirement age per case specification; standard in Indian corporate DB plans.,58 – 65,Change to 58 or 65 to test early/late retirement impact
+Starting Annual CTC (?),"2,000,000","Competition-specified baseline: ?20,00,000 p.a. — mid-level hire in a large domestic corporate.",?12L – ?60L,All contribution values derive from this via Basic/CTC ratio
+Basic Salary as % of CTC,40%,Industry norm for large Indian corporates: basic = 40–50% of CTC. EPF & WeCare contributions sit on basic.,35% – 50%,Lower basic % ? lower EPF/WeCare contributions but higher take-home — key structural lever
+Current Monthly Expenses as % of Net Salary,50%,Case specification: 50% of net salary on current expenses — urban lifestyle spend.,40% – 70%,"Determines disposable income available for voluntary savings (ELSS SIP, extra NPS)"
+B. SALARY GROWTH & INFLATION,,,,
+Annual Salary Growth Rate,8.0%,,4% – 9%,Higher growth ? larger final salary ? harder to hit replacement ratio from fixed-rate vehicles. Note: a flat 8%/yr for 32 straight years is not realistic — salary growth tapers with seniority.
+Inflation Rate (CPI),6.0%,RBI medium-term inflation target band: 4% ± 2%. Set at 6% to capture food & urban cost pressure.,4% – 8%,Used to express retirement values in today's purchasing power
+Post-Retirement Inflation,5.0%,"Slightly lower than pre-retirement (lower transport/childcare, higher medical). Net 5% assumed.",4% – 7%,Affects real value of fixed DB pension over the retirement horizon
+C. EPF — EMPLOYEES' PROVIDENT FUND,,,,
+EPF Employee Contribution Rate,12%,"Statutory: Section 6, EPF & MP Act 1952 — 12% of basic salary mandatory.",Fixed at 12%,Cannot be reduced below 12%; can voluntarily add more via VPF
+EPF Employer Contribution Rate,12%,"Statutory 12% employer share. 8.33% routes to EPS, 3.67% to EPF; full 12% modelled in EPF since EPS pension is small.",Fixed at 12%,"EPS provides a small separate pension, not modelled here for simplicity"
+EPF Interest Rate,8.15%,"EPFO declared rate FY 2024-25: 8.15% p.a., sovereign guaranteed. Ranged 8.1%-8.65% over the last decade.",7.5% – 8.65%,"EEE regime: no tax on contribution, growth, or withdrawal after 5 years"
+Voluntary Provident Fund (VPF) Additional %,0%,Set to 0% in base case. Employee can voluntarily contribute up to 100% of basic at EPF rate.,0% – 20%,VPF earns the same 8.15% rate — useful lever for risk-averse savers
+D. NPS — NATIONAL PENSION SYSTEM (Tier I),,,,
+NPS Employee Voluntary Contribution (% of basic),5%,Competition default: 5% voluntary. PFRDA allows 0–unlimited; 5% is realistic for early adopters.,0% – 10%,"Tax deductible under Section 80CCD(1B): additional ?50,000 deduction over the 80C limit"
+NPS Employer Contribution (% of basic),10%,10% employer NPS contribution is tax-deductible for the employer under Section 80CCD(2).,0% – 14%,Most favourable NPS tax treatment — full deduction on employer contribution received by employee
+NPS Equity Allocation (% of NPS corpus),75%,Active Choice: max 75% equity allowed up to age 50; Lifecycle Fund auto-reduces post-50.,50% – 75%,Returns weighted: equity_alloc × equity_return + (1?equity_alloc) × debt_return
+NPS Equity Fund Expected Return,12.0%,Long-run Nifty 50 CAGR ? 12–13% (1996–2024). NPS C-scheme historically delivered 10-12%.,9% – 15%,Feeds the blended NPS return calculated below
+NPS Debt Fund Expected Return,7.0%,NPS G-scheme (govt securities): 7–8% p.a. historically. 7% assumed conservatively.,6% – 9%,Feeds the blended NPS return calculated below
+NPS Blended Return (= equity% × equity_ret + debt% × debt_ret),10.75%,Weighted average of equity and debt returns based on allocation — used throughout the model for NPS accumulation.,Derived ?10.75%,Auto-calculated — do not overwrite
+NPS Annuity Compulsion (% of corpus used to buy annuity),40%,PFRDA regulation: minimum 40% of NPS corpus must purchase an annuity from an IRDAI-registered ASP at age 60.,40% – 100%,Remaining 60% is a tax-free lump sum; 40% is the statutory floor
+NPS Annuity Purchase Rate (p.a.),5.50%,Illustrative rate from LIC Jeevan Akshay VII / HDFC Life annuity products (2024).,4.5% – 6.5%,Monthly NPS pension = (NPS corpus × 40%) × annuity rate / 12
+E. ELSS & MUTUAL FUND SIP,,,,
+Monthly ELSS / Equity MF SIP (?),"10,000","Illustrative voluntary SIP — ?10,000/month, material but affordable (~9% of take-home at ?20L CTC).","?0 – ?50,000",Set to 0 to model an EPF + NPS only scenario
+ELSS / Equity MF SIP Annual Step-Up Rate,10.0%,"Assumes SIP increases 10% per year alongside salary growth, maintaining a constant SIP-to-income ratio.",0% – 15%,Set to 0 for a flat (non-escalating) SIP
+ELSS / Equity MF Expected Return (gross),13.0%,Long-run large-cap equity return in India: 12–14% CAGR (Nifty 50 since 1996). 13% used as base case.,10% – 16%,3-year ELSS lock-in; after lock-in the corpus stays invested
+ELSS / MF Expense Ratio (deducted from gross return),1.0%,Direct-plan TER for ELSS funds: ~0.5–1.5%. 1% used as mid-point.,0.5% – 2%,Net return used in accumulation = gross return ? expense ratio (?12% net)
+ELSS Safe Withdrawal Rate at Retirement,4.0%,"Classic 'safe withdrawal rate' (Bengen 4% Rule, adapted for Indian equity/debt glide path) — the sustainable annual drawdown from an equity corpus without depleting it over a 25-30 year retirement.",3.5% – 5%,Converts the ELSS lump sum into an equivalent monthly income stream for replacement-ratio purposes: Monthly income = ELSS corpus × SWR / 12
+G. WECARE DB PLAN — DEFINED BENEFIT PENSION,,,,
+WeCare Employee Contribution (% of basic/month),10%,Fixed per plan specification: 10% of base salary per month until age 60 — this is the employee's cost.,Fixed at 10%,"Plan rule, not variable — funds the employer's pension reserve"
+WeCare Employer Guaranteed Pension (% of final avg salary),50%,Plan rule: 50% of the employee's average salary over the final 12 months of service — classic DB formula.,Fixed at 50%,This is the employer's guaranteed obligation regardless of market returns
+WeCare Commutation % (portion commuted to lump sum at 60),33%,Up to 1/3 (33%) of pension may be commuted to a lump sum at retirement (cf. 7th Pay Commission: up to 40%).,0% – 40%,Commuted amount is tax-free under Section 10(10A); remaining 67% is taxable monthly pension
+Commutation Factor (lump sum per ?1 of annual pension),11.0,"Derived from a 6% annuity discount rate and the LIC 2020-21 mortality table for age 60, 15-year certain annuity.",9.0 – 13.0,Lump sum = commuted annual pension × commutation factor; factor falls as rates rise or age increases
+H. TAKE-HOME SALARY COMPUTATION,,,,
+Effective Income Tax Rate on Gross Salary,20%,"Indicative effective rate for ?20L CTC: ~20% (old regime, after 80C/HRA/standard deduction). Simplified — consult a CA.",15% – 30%,All 80C benefits assumed fully utilised
+EPF Admin / EDLI / Other PF Charges (% of basic),0.50%,"Employer's EPF admin charges: ~0.5% of basic (EDLI + admin) — an employer cost, not deducted from employee pay.",0.5% – 1%,Informational only — not deducted from employee take-home
+"Gratuity Provision (% of basic, employer cost)",4.81%,Payment of Gratuity Act 1972: 15/26 × basic/12 per year of service ? 1.54× basic over 32 years ? 4.81% p.a. provision.,4% – 6%,Separate employer obligation from WeCare — shown for completeness
+I. HOUSING / HOME LOAN PARAMETERS,,,,
+Target House Purchase Price (?),"15,000,000","Case specification: ?1,50,00,000 — a 2BHK in a Tier-1 city suburb (Mumbai/Bengaluru/NCR mid-range).",?50L – ?3Cr,Higher price ? larger loan ? higher EMI ? more stress on take-home & retirement contributions
+Down Payment as % of House Price,20%,Baseline assumption: 20% down payment — industry-standard minimum for home loans in India.,10% – 50%,Higher down payment ? lower loan ? lower EMI ? more money for retirement savings
+Home Loan Interest Rate (p.a.),7.50%,Case specification: 7.5% p.a. — reflects current SBI/HDFC floating rates for salaried borrowers (2024-25).,7% – 9.5%,"Even a 1% rate rise increases EMI by ??7,000 on a ?1.2Cr loan"
+Home Loan Tenure (years),20,Case specification: 20 years — the standard tenure for salaried borrowers.,10 – 30 years,"EMI formula: P × r(1+r)^n / ((1+r)^n ? 1), r = monthly rate, n = months"
+Safe EMI-to-Net-Take-Home Threshold,35%,Industry rule of thumb: EMI should not exceed 35% of net monthly income; banks' FOIR ceiling can be up to 50%.,30% – 50%,Used to compute the maximum safe EMI and maximum affordable loan for each profile
+J. KEY DERIVED PARAMETERS (auto-calculated — do not edit),,,,
+Accumulation Period (years),32,Retirement age minus current age — total years of compounding,,
+Starting Monthly Basic Salary (?),"66,667",Annual CTC × Basic% / 12 months,,
+Starting Annual Basic Salary (?),"800,000",Annual CTC × Basic%,,
+Starting Gross Monthly CTC (?),"166,667",Annual CTC / 12,,
+Starting Monthly EPF Employee (?),"8,000",Monthly basic × EPF employee rate,,
+Starting Monthly EPF Employer (?),"8,000",Monthly basic × EPF employer rate,,
+Starting Monthly NPS Employee (?),"3,333",Monthly basic × NPS employee rate,,
+Starting Monthly NPS Employer (?),"6,667",Monthly basic × NPS employer rate,,
+Starting Monthly WeCare Contribution (?),"6,667",Monthly basic × WeCare employee contribution rate (10%),,
+Starting Monthly Take-Home (?),"105,333",Gross/12 × (1?tax) ? EPF employee ? NPS employee ? WeCare contribution ? ELSS SIP,,
+Total Retirement-Related Deduction per Month (?),"28,000",EPF + NPS (employee) + WeCare + ELSS SIP,,

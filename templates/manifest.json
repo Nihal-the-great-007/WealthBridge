@@ -1,0 +1,41 @@
+{
+  "name": "WealthBridge",
+  "short_name": "WealthBridge",
+  "description": "Bridging Today's Income with Tomorrow's Retirement \u2014 Premium Retirement Planner",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FAF8F5",
+  "theme_color": "#0083B0",
+  "orientation": "portrait-primary",
+  "categories": [
+    "finance",
+    "productivity"
+  ],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [],
+  "shortcuts": [
+    {
+      "name": "Financial Calculator",
+      "url": "/?tab=1",
+      "description": "Open Unified Financial Calculator"
+    },
+    {
+      "name": "Wealth Accumulation",
+      "url": "/?tab=3",
+      "description": "View Wealth Accumulation Layer"
+    }
+  ]
+}

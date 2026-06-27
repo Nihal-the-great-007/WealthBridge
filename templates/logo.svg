@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="wb-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%"   stop-color="#00b4db"/>
+      <stop offset="100%" stop-color="#0083B0"/>
+    </linearGradient>
+  </defs>
+  <!-- Rounded background square -->
+  <rect width="64" height="64" rx="14" fill="url(#wb-grad)" opacity="0.15"/>
+  <!-- Bridge arch left -->
+  <path d="M8 44 Q16 20 28 24 Q20 24 24 44" stroke="url(#wb-grad)" stroke-width="3.5"
+        stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- Bridge arch right -->
+  <path d="M40 44 Q44 20 56 44" stroke="url(#wb-grad)" stroke-width="3.5"
+        stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- Centre valley -->
+  <path d="M24 44 Q32 28 40 44" stroke="url(#wb-grad)" stroke-width="3.5"
+        stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+  <!-- Road / base line -->
+  <line x1="6" y1="44" x2="58" y2="44" stroke="url(#wb-grad)" stroke-width="3"
+        stroke-linecap="round"/>
+  <!-- Cable lines left arch -->
+  <line x1="16" y1="44" x2="18" y2="34" stroke="url(#wb-grad)" stroke-width="1.2" opacity="0.7"/>
+  <line x1="22" y1="44" x2="23" y2="28" stroke="url(#wb-grad)" stroke-width="1.2" opacity="0.7"/>
+  <!-- Cable lines right arch -->
+  <line x1="42" y1="44" x2="43" y2="28" stroke="url(#wb-grad)" stroke-width="1.2" opacity="0.7"/>
+  <line x1="48" y1="44" x2="50" y2="34" stroke="url(#wb-grad)" stroke-width="1.2" opacity="0.7"/>
+</svg>
